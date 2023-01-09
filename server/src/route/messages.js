@@ -9,9 +9,10 @@ const messagesRoute = [
         // Get All Messages
         method: 'get',
         route: '/messages',
-        handler: (req, res) => {
+        handler: ({ query: { cursor = '' } }, res) => {
             const msgs = getMsgs()
-            res.send(msgs)
+            const fromIndex = msgs.findIndex(msgs => msgs.id === cursor) + 1
+            res.send(msgs.slice(fromIndex, fromIndex + 15))
         },
     },
     {
