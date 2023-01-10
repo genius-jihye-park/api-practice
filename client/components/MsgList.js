@@ -5,11 +5,10 @@ import MsgInput from './MsgInput'
 import fetcher from '../fetcher'
 import useInfiniteScroll from '../hooks/useInfiniteScroll'
 
-const MsgList = () => {
+const MsgList = ({ smsgs, users }) => {
     const { query } = useRouter()
-    const userId = query.userId || query.userid || '';
-
-    const [msgs, setMsgs] = useState([])
+    const userId = query.userId || query.userid || ''
+    const [msgs, setMsgs] = useState(smsgs)
     const [editingId, setEditingId] = useState(null)
     const [hasNext, setHasNext] = useState(true)
     const fetchMoreEl = useRef(null)
@@ -50,16 +49,15 @@ const MsgList = () => {
 
 
     const getMessages = async () => {
-        const newMsgs = await fetcher('get', '/messages', { params: { cursor: msgs[msgs.length - 1]?.id || '' } })
+        const newMsgs = await fetcher('get', '/messages', {
+            params: { cursor: msgs[msgs.length - 1]?.id || '' }
+        })
         if (newMsgs.length === 0) {
             setHasNext(false)
             return
         }
         setMsgs(msgs => [...msgs, ...newMsgs])
     }
-    useEffect(() => {
-        getMessages()
-    }, [])
 
     useEffect(() => {
         if (intersecting && hasNext) getMessages()
@@ -78,6 +76,7 @@ const MsgList = () => {
                         startEdit={() => setEditingId(x.id)}
                         isEditing={editingId === x.id}
                         myId={userId}
+                        user={users[x.id]}
                     />
                 ))}
             </ul>
