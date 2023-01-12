@@ -18,7 +18,7 @@ const server = new ApolloServer({
     typeDefs: schema,
     resolvers: routes,
     context: {
-        moodels: {
+        db: {
             messages: '',
             users: ''
         }
