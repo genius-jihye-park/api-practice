@@ -1,8 +1,9 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express'
 import cors from 'cors';
-import messagesRoute from './route/messages.js';
-import usersRoutes from './route/users.js';
+import resolvers from './resolvers/index.js';
+import schema from './schema/index.js';
+import { readDB } from './dbControlle.jsr';
 
 const app = express();
 app.use(
@@ -19,8 +20,8 @@ const server = new ApolloServer({
     resolvers: routes,
     context: {
         db: {
-            messages: '',
-            users: ''
+            messages: readDB('messages'),
+            users: readDB('users')
         }
     }
 })
