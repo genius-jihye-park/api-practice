@@ -1,4 +1,4 @@
-import { gql } from "graphql-tag";
+import gql from "graphql-tag";
 
 
 export const GET_MESSAGES = gql`
@@ -56,7 +56,6 @@ export const UPDATE_MESSAGE = gql`
 
 export const DELETE_MESSAGE = gql`
     mutation DELETE_MESSAGE($id: ID!, $userId: ID!) {
-        deleteMessage(id: $id, userId: $userId) {
-        }
+        deleteMessage(id: $id, userId: $userId)
     }
 `

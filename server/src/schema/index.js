@@ -3,12 +3,12 @@ import messageSchema from './message.js'
 import userSchema from './user.js'
 
 const linkSchema = gql`
-    type Query {
-        : Boolean
-    }
-    type Mutation {
-        : Boolean
-    }
+  type Query {
+    _: Boolean
+  }
+  type Mutation {
+    _: Boolean
+  }
 `
 
-export default [linkSchema, userSchema, messageSchema]
+export default [linkSchema, messageSchema, userSchema]

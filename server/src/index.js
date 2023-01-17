@@ -17,7 +17,7 @@ app.use(
 
 const server = new ApolloServer({
     typeDefs: schema,
-    resolvers: routes,
+    resolvers,
     context: {
         db: {
             messages: readDB('messages'),

@@ -1,18 +1,21 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
+import { useQuery } from 'react-query'
 import MsgItem from './MsgItem'
 import MsgInput from './MsgInput'
-import fetcher from '../fetcher'
-import useInfiniteScroll from '../hooks/useInfiniteScroll'
+import { QueryKeys, fetcher } from '../queryClient'
+// import useInfiniteScroll from '../hooks/useInfiniteScroll'
+import { GET_MESSAGES } from '../graphql/message';
 
 const MsgList = ({ smsgs, users }) => {
+
     const { query } = useRouter()
     const userId = query.userId || query.userid || ''
     const [msgs, setMsgs] = useState(smsgs)
     const [editingId, setEditingId] = useState(null)
-    const [hasNext, setHasNext] = useState(true)
-    const fetchMoreEl = useRef(null)
-    const intersecting = useInfiniteScroll(fetchMoreEl)
+    // const [hasNext, setHasNext] = useState(true)
+    // const fetchMoreEl = useRef(null)
+    // const intersecting = useInfiniteScroll(fetchMoreEl)
 
     const onCreate = async text => {
         const newMsg = await fetcher('post', '/messages', { text, userId })
@@ -47,6 +50,14 @@ const MsgList = ({ smsgs, users }) => {
 
     const doneEdit = () => setEditingId(null)
 
+    const { data, error, isError } = useQuery(QueryKeys.MESSAGES, () => fetcher(GET_MESSAGES))
+
+    console.log(data)
+
+    if (isError) {
+        console.log(error)
+        return null
+    }
 
     const getMessages = async () => {
         const newMsgs = await fetcher('get', '/messages', {
@@ -59,9 +70,9 @@ const MsgList = ({ smsgs, users }) => {
         setMsgs(msgs => [...msgs, ...newMsgs])
     }
 
-    useEffect(() => {
-        if (intersecting && hasNext) getMessages()
-    }, [intersecting])
+    // useEffect(() => {
+    //     if (intersecting && hasNext) getMessages()
+    // }, [intersecting])
 
     return (
         <>
@@ -76,11 +87,11 @@ const MsgList = ({ smsgs, users }) => {
                         startEdit={() => setEditingId(x.id)}
                         isEditing={editingId === x.id}
                         myId={userId}
-                        user={users[x.id]}
+                        user={users.find(x => userId === x.userId)}
                     />
                 ))}
             </ul>
-            <div ref={fetchMoreEl} />
+            {/* <div ref={fetchMoreEl} /> */}
             {/* 화면 상에 나타났을 때 다음 데이터를 불러와라 */}
         </>
     )
